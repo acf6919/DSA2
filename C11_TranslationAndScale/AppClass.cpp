@@ -18,7 +18,7 @@ void Application::InitVariables(void)
     m_pMesh2->GenerateCube(0.5f, C_BLACK);
 	//for each (vector3 v in m_pMesh2.*m_lVertexPos)
 	
-
+	//
 	//m_pMesh->GenerateSphere(1.0f, 5, C_WHITE);
 	/*
 	m_pMesh = new MyMesh();
