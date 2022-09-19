@@ -61,10 +61,20 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
 	// -------------------------------
-
-	// Adding information about color
+	matrix4 a_m4Transform = glm::translate(IDENTITY_M4, vector3(0.0f, 0.0f, 0.0f));
+	std::vector<vector3> positionList = BTXs::GenerateCone(a_fRadius, a_fHeight, a_nSubdivisions);
+	for (uint i = 0; i < positionList.size(); i++)
+	{
+		positionList[i] = a_m4Transform * vector4(positionList[i], 1.0f);
+	}
+	uint uSize = positionList.size();
+	for (uint i = 0; i < uSize; i += 3)
+	{
+		AddTri(positionList[i], positionList[i + 1], positionList[i + 2]);
+	}
+	
 	CompleteMesh(a_v3Color);
 	CompileOpenGL3X();
 }
@@ -85,8 +95,18 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
 	// -------------------------------
+	matrix4 a_m4Transform = glm::translate(IDENTITY_M4, vector3(0.0f, 0.0f, 0.0f));
+	std::vector<vector3> positionList = BTXs::GenerateCylinder(a_fRadius, a_fHeight, a_nSubdivisions);
+	for (uint i = 0; i < positionList.size(); i++)
+	{
+		positionList[i] = a_m4Transform * vector4(positionList[i], 1.0f);
+	}
+	for (size_t i = 0; i < positionList.size(); i += 3)
+	{
+		AddTri(positionList[i], positionList[i + 1], positionList[i + 2]);
+	}
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
@@ -115,9 +135,18 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
+	//GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
 	// -------------------------------
-
+	std::vector<vector3> positionList = BTXs::GenerateTube(a_fOuterRadius, a_fInnerRadius, a_fHeight, a_nSubdivisions);
+	matrix4 a_m4Transform = glm::translate(IDENTITY_M4, vector3(0.0f, 0.0f, 0.0f));
+	for (uint i = 0; i < positionList.size(); i++)
+	{
+		positionList[i] = a_m4Transform * vector4(positionList[i], 1.0f);
+	}
+	for (size_t i = 0; i < positionList.size(); i += 3)
+	{
+		AddTri(positionList[i], positionList[i + 1], positionList[i + 2]);
+	}
 	// Adding information about color
 	CompleteMesh(a_v3Color);
 	CompileOpenGL3X();
@@ -147,8 +176,18 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
+	//GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
 	// -------------------------------
+	matrix4 a_m4Transform = glm::translate(IDENTITY_M4, vector3(0.0f, 0.0f, 0.0f));
+	std::vector<vector3> positionList = BTXs::GenerateTorus(a_fOuterRadius, a_fInnerRadius, a_nSubdivisionsA, a_nSubdivisionsB);
+	for (uint i = 0; i < positionList.size(); i++)
+	{
+		positionList[i] = a_m4Transform * vector4(positionList[i], 1.0f);
+	}
+	for (size_t i = 0; i < positionList.size(); i += 3)
+	{
+		AddTri(positionList[i], positionList[i + 1], positionList[i + 2]);
+	}
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
@@ -172,8 +211,16 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
-	// -------------------------------
+	std::vector<vector3> positionList = BTXs::GenerateSphere(a_fRadius, a_nSubdivisions);
+	matrix4 a_m4Transform = glm::translate(IDENTITY_M4, vector3(0.0f, 0.0f, 0.0f));
+	for (uint i = 0; i < positionList.size(); i++)
+	{
+		positionList[i] = a_m4Transform * vector4(positionList[i], 1.0f);
+	}
+	for (size_t i = 0; i < positionList.size(); i += 3)
+	{
+		AddTri(positionList[i], positionList[i + 1], positionList[i + 2]);
+	}
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
