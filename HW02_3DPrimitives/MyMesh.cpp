@@ -240,7 +240,7 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 	//GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
 	// -------------------------------
 
-	//Bootcamp crash took out my mac and what I had before was abysmal.
+	//Bootcamp crash took out my mac and I don't have the time to recode before my flight.
 	//Thank you so much for granting me this chance to resubmit.
 	matrix4 a_m4Transform = glm::translate(IDENTITY_M4, vector3(0.0f, 0.0f, 0.0f));
 	std::vector<vector3> positionList = BTXs::GenerateTorus(a_fOuterRadius, a_fInnerRadius, a_nSubdivisionsA, a_nSubdivisionsB);
