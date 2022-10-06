@@ -63,16 +63,26 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	// Replace this with your code
 	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
 	// -------------------------------
-	matrix4 a_m4Transform = glm::translate(IDENTITY_M4, vector3(0.0f, 0.0f, 0.0f));
-	std::vector<vector3> positionList = BTXs::GenerateCone(a_fRadius, a_fHeight, a_nSubdivisions);
-	for (uint i = 0; i < positionList.size(); i++)
+	//centers the object at 0,0,0
+	vector3 bottom(0, 0, -a_fHeight / 2);
+	vector3 top(0, 0, a_fHeight / 2);
+	vector3 temp;
+
+	std::vector<vector3> positionList;
+	GLfloat theta = 0;
+	GLfloat delta = static_cast<GLfloat>(2.0 * PI /a_nSubdivisions);
+	//generates points and stores in a list
+	for (int i = 0; i < a_nSubdivisions; i++)
 	{
-		positionList[i] = a_m4Transform * vector4(positionList[i], 1.0f);
+		temp = vector3((cos(theta) * a_fRadius), (sin(theta) * a_fRadius), bottom.z);
+		theta += delta;
+		positionList.push_back(temp);
 	}
-	uint uSize = positionList.size();
-	for (uint i = 0; i < uSize; i += 3)
+	//connects points with tri
+	for (int i = 0; i < a_nSubdivisions; i++)
 	{
-		AddTri(positionList[i], positionList[i + 1], positionList[i + 2]);
+		AddTri(bottom, positionList[(i + 1) % a_nSubdivisions], positionList[i]);
+		AddTri(top, positionList[i], positionList[(i + 1) % a_nSubdivisions]);
 	}
 	
 	CompleteMesh(a_v3Color);
@@ -94,18 +104,38 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	Release();
 	Init();
 
-	// Replace this with your code
+	//Replace this with your code
 	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
 	// -------------------------------
-	matrix4 a_m4Transform = glm::translate(IDENTITY_M4, vector3(0.0f, 0.0f, 0.0f));
-	std::vector<vector3> positionList = BTXs::GenerateCylinder(a_fRadius, a_fHeight, a_nSubdivisions);
-	for (uint i = 0; i < positionList.size(); i++)
+	vector3 topCenter(0, 0, a_fHeight / 2);
+	vector3 bottomCenter(0, 0, -a_fHeight / 2);
+
+	std::vector<vector3> bottomPoints;
+	std::vector<vector3> topPoints;
+	vector3 temp;
+	GLfloat theta = 0;
+	GLfloat delta = static_cast<GLfloat>(2.0 * PI / a_nSubdivisions);
+
+	//calcuates two circles
+	for (int i = 0; i < a_nSubdivisions; i++)
 	{
-		positionList[i] = a_m4Transform * vector4(positionList[i], 1.0f);
+		temp = vector3((cos(theta) * a_fRadius), (sin(theta) * a_fRadius), bottomCenter.z);
+		bottomPoints.push_back(temp);
+
+		temp = vector3((cos(theta) * a_fRadius), (sin(theta) * a_fRadius), topCenter.z);
+		topPoints.push_back(temp);
+
+		theta += delta;
 	}
-	for (size_t i = 0; i < positionList.size(); i += 3)
+
+	for (int i = 0; i < a_nSubdivisions; i++)
 	{
-		AddTri(positionList[i], positionList[i + 1], positionList[i + 2]);
+		//conects each circle to centers
+		AddTri(bottomCenter, bottomPoints[(i + 1) % a_nSubdivisions], bottomPoints[i]);
+		AddTri(topCenter, topPoints[i], topPoints[(i + 1) % a_nSubdivisions]);
+
+		//connects circle with quads to complete cylinder
+		AddQuad(bottomPoints[i], bottomPoints[(i + 1) % a_nSubdivisions], topPoints[i], topPoints[(i + 1) % a_nSubdivisions]);
 	}
 
 	// Adding information about color
@@ -137,16 +167,47 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	// Replace this with your code
 	//GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
 	// -------------------------------
-	std::vector<vector3> positionList = BTXs::GenerateTube(a_fOuterRadius, a_fInnerRadius, a_fHeight, a_nSubdivisions);
-	matrix4 a_m4Transform = glm::translate(IDENTITY_M4, vector3(0.0f, 0.0f, 0.0f));
-	for (uint i = 0; i < positionList.size(); i++)
+
+	std::vector<vector3> innerRing1;
+	std::vector<vector3> outerRing1;
+	std::vector<vector3> innerRing2;
+	std::vector<vector3> outerRing2;
+
+	GLfloat theta = 0.0f;
+	GLfloat delta = static_cast<GLfloat>(2.0 * PI / a_nSubdivisions);
+	vector3 temp;
+
+	//generates all points and stores them in several vectors
+	for (int i = 0; i < a_nSubdivisions; i++)
 	{
-		positionList[i] = a_m4Transform * vector4(positionList[i], 1.0f);
+		//generates the location of each point in all four rings
+		temp = vector3(cos(theta) * a_fInnerRadius, sin(theta) * a_fInnerRadius, a_fHeight / 2);
+		innerRing1.push_back(temp);
+
+		temp = vector3(cos(theta) * a_fInnerRadius, sin(theta) * a_fInnerRadius, -a_fHeight / 2);
+		innerRing2.push_back(temp);
+
+		temp = vector3(cos(theta) * a_fOuterRadius, sin(theta) * a_fOuterRadius, a_fHeight / 2);
+		outerRing1.push_back(temp);
+
+		temp = vector3(cos(theta) * a_fOuterRadius, sin(theta) * a_fOuterRadius, -a_fHeight / 2);
+		outerRing2.push_back(temp);
+
+		theta += delta;
 	}
-	for (size_t i = 0; i < positionList.size(); i += 3)
+
+	for (int i = 0; i < a_nSubdivisions; i++)
 	{
-		AddTri(positionList[i], positionList[i + 1], positionList[i + 2]);
+		//connects inner rings
+		AddQuad(innerRing1[i], innerRing1[(i + 1) % a_nSubdivisions], innerRing2[i], innerRing2[(i + 1) % a_nSubdivisions]);
+		AddQuad(innerRing2[i], innerRing2[(i + 1) % a_nSubdivisions], outerRing2[i], outerRing2[(i + 1) % a_nSubdivisions]);
+
+		//creates outer rings
+		AddQuad(outerRing1[i], outerRing1[(i + 1) % a_nSubdivisions], innerRing1[i], innerRing1[(i + 1) % a_nSubdivisions]);
+		AddQuad(outerRing2[i], outerRing2[(i + 1) % a_nSubdivisions], outerRing1[i], outerRing1[(i + 1) % a_nSubdivisions]);
+
 	}
+
 	// Adding information about color
 	CompleteMesh(a_v3Color);
 	CompileOpenGL3X();
@@ -178,6 +239,9 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 	// Replace this with your code
 	//GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
 	// -------------------------------
+
+	//Bootcamp crash took out my mac and what I had before was abysmal.
+	//Thank you so much for granting me this chance to resubmit.
 	matrix4 a_m4Transform = glm::translate(IDENTITY_M4, vector3(0.0f, 0.0f, 0.0f));
 	std::vector<vector3> positionList = BTXs::GenerateTorus(a_fOuterRadius, a_fInnerRadius, a_nSubdivisionsA, a_nSubdivisionsB);
 	for (uint i = 0; i < positionList.size(); i++)
@@ -188,6 +252,7 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 	{
 		AddTri(positionList[i], positionList[i + 1], positionList[i + 2]);
 	}
+
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
@@ -211,15 +276,56 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	Init();
 
 	// Replace this with your code
-	std::vector<vector3> positionList = BTXs::GenerateSphere(a_fRadius, a_nSubdivisions);
-	matrix4 a_m4Transform = glm::translate(IDENTITY_M4, vector3(0.0f, 0.0f, 0.0f));
-	for (uint i = 0; i < positionList.size(); i++)
+	vector3 topPoint = vector3(0.0f, 0.0f,(a_fRadius*1.25));
+	vector3 bottomPoint = vector3(0.0f, 0.0f, (-a_fRadius *1.25));
+	std::vector<std::vector<vector3>> pointLevels;
+	GLfloat theta = 0.0f;
+	GLfloat delta = static_cast<GLfloat>(2.0 * PI / a_nSubdivisions);
+
+	//current vars and deltas
+	float currentRadius = a_fRadius;
+	float currentHeight = a_fRadius * 1.25;
+	float radiusDelta = a_fRadius / a_nSubdivisions;
+	float heightDelta = (topPoint.z-bottomPoint.z) / (a_nSubdivisions+1);
+
+	//initializes vector
+	for (int i = 0; i < a_nSubdivisions; i++)
 	{
-		positionList[i] = a_m4Transform * vector4(positionList[i], 1.0f);
+		pointLevels.push_back(std::vector<vector3>());
 	}
-	for (size_t i = 0; i < positionList.size(); i += 3)
+	for (float i = 0; i < a_nSubdivisions; i++)
 	{
-		AddTri(positionList[i], positionList[i + 1], positionList[i + 2]);
+		//Changes current height
+		currentHeight -= heightDelta;
+		for (int j = 0; j < a_nSubdivisions; j++)
+		{
+			pointLevels[i].push_back(vector3((cos(theta) * currentRadius), (sin(theta) * currentRadius), currentHeight));
+
+			theta += delta;
+		}
+
+		//change diameter of levels appropriately
+		if (i < a_nSubdivisions / 2) {
+			currentRadius += radiusDelta;
+		}
+		else {
+			currentRadius -= radiusDelta;
+		}
+	}
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		//creates tris between top and bottom
+		AddTri(topPoint, pointLevels[0][i], pointLevels[0][(i + 1) % a_nSubdivisions]);
+		AddTri(bottomPoint, pointLevels[pointLevels.size() - 1][(i + 1) % a_nSubdivisions], pointLevels[pointLevels.size() - 1][i]);
+	}
+
+	//connect levels
+	for (int i = 0; i < a_nSubdivisions - 1; i++)
+	{
+		for (int j = 0; j < a_nSubdivisions; j++) {
+
+			AddQuad(pointLevels[(i + 1) % a_nSubdivisions][j], pointLevels[(i + 1) % a_nSubdivisions][(j + 1) % a_nSubdivisions], pointLevels[i][j], pointLevels[i][(j + 1) % a_nSubdivisions]);
+		}
 	}
 
 	// Adding information about color
