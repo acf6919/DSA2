@@ -141,14 +141,26 @@ MyRigidBody::MyRigidBody(std::vector<vector3> a_pointList)
 	//Get the max and min out of the list
 	for (uint i = 1; i < uVertexCount; ++i)
 	{
-		if (m_v3MaxL.x < a_pointList[i].x) m_v3MaxL.x = a_pointList[i].x;
-		else if (m_v3MinL.x > a_pointList[i].x) m_v3MinL.x = a_pointList[i].x;
+		if (m_v3MaxL.x < a_pointList[i].x) {
+			m_v3MaxL.x = a_pointList[i].x;
+		}
+		else if (m_v3MinL.x > a_pointList[i].x) {
+			m_v3MinL.x = a_pointList[i].x;
+		}
 
-		if (m_v3MaxL.y < a_pointList[i].y) m_v3MaxL.y = a_pointList[i].y;
-		else if (m_v3MinL.y > a_pointList[i].y) m_v3MinL.y = a_pointList[i].y;
+		if (m_v3MaxL.y < a_pointList[i].y) {
+			m_v3MaxL.y = a_pointList[i].y;
+		}
+		else if (m_v3MinL.y > a_pointList[i].y) {
+			m_v3MinL.y = a_pointList[i].y;
+		}
 
-		if (m_v3MaxL.z < a_pointList[i].z) m_v3MaxL.z = a_pointList[i].z;
-		else if (m_v3MinL.z > a_pointList[i].z) m_v3MinL.z = a_pointList[i].z;
+		if (m_v3MaxL.z < a_pointList[i].z) {
+			m_v3MaxL.z = a_pointList[i].z;
+		}
+		else if (m_v3MinL.z > a_pointList[i].z) {
+			m_v3MinL.z = a_pointList[i].z;
+		}
 	}
 
 	//with model matrix being the identity, local and global are the same
