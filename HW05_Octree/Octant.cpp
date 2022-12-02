@@ -1,6 +1,9 @@
 #include "Octant.h"
 using namespace BTX;
 //  Octant
+//Name: Aedan Frank
+//HW5 Octree
+//Date: 12/01/22
 uint Octant::m_uOctantCount = 0;
 uint Octant::m_uMaxLevel = 3;
 uint Octant::m_uIdealEntityCount = 5;
